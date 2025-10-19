@@ -8,10 +8,12 @@ async function loadHistoricalPlans() {
   `;
 
   try {
-    const response = await fetch("https://api.github.com/repos/dsb-bot/dsb-database/contents/plans");
-    if (!response.ok) throw new Error("Fehler beim Abrufen der API");
+    // 👉 Ruft jetzt deinen Cloudflare-Worker-Endpunkt auf, nicht GitHub direkt
+    const response = await fetch("/plans");
+    if (!response.ok) throw new Error("Fehler beim Abrufen der Pläne");
     const files = await response.json();
 
+    // Nur HTML-Dateien im Format YYYY-MM-DD.html
     const planFiles = files.filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}\.html$/));
     planFiles.sort((a, b) => new Date(b.name.replace(".html", "")) - new Date(a.name.replace(".html", "")));
 
@@ -45,10 +47,11 @@ async function loadHistoricalPlans() {
           const options = { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" };
           const formattedDate = date.toLocaleDateString("de-DE", options);
           const [weekday, rest] = formattedDate.split(", ");
-          const downloadUrl = file.download_url;
+          // 👉 Lädt jetzt über deinen Worker statt GitHub
+          const downloadUrl = `/plans/${file.name}`;
 
           const card = document.createElement("div");
-          card.className = "card hidden"; // wird später eingeblendet
+          card.className = "card hidden";
           card.dataset.url = downloadUrl;
           card.onclick = () => loadPlan(card);
           card.style.cursor = "pointer";
@@ -63,7 +66,7 @@ async function loadHistoricalPlans() {
           setTimeout(() => {
             card.classList.remove("hidden");
             card.classList.add("fade-in");
-          }, cardIndex * 100); // alle 100 ms die nächste Karte
+          }, cardIndex * 100);
           cardIndex++;
         });
 
@@ -73,12 +76,12 @@ async function loadHistoricalPlans() {
   } catch (error) {
     console.error(error);
     container.innerHTML = `
-    <div class="card">
-      <h2>Ein Fehler ist aufgetreten.</h2>
-      <p>${error}</p>
-      <p>Bitte melde den Fehler <a href="/kontakt.html">hier<a/>.</p>
-    </div>
-  `;
+      <div class="card">
+        <h2>Ein Fehler ist aufgetreten.</h2>
+        <p>${error}</p>
+        <p>Bitte melde den Fehler <a href="/kontakt.html">hier<a/>.</p>
+      </div>
+    `;
   }
 }
 
@@ -98,6 +101,8 @@ function getWeekNumber(d) {
 function loadPlan(element) {
   const url = element.dataset.url;
   console.log("Lade Plan:", url);
+  // Hier kannst du später z. B. ein Modal oder iframe öffnen:
+  // showPlan(url);
 }
 
 document.addEventListener("DOMContentLoaded", loadHistoricalPlans);

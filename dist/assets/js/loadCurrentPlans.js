@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("currentPlans-container");
-  const apiUrl = "https://api.github.com/repos/dsb-bot/dsb-database/contents/plans";
+  const apiUrl = "/plans";
   const today = new Date().toISOString().split("T")[0];
 
   // Neues <div class="list"> erzeugen
@@ -39,7 +39,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (const file of futureFiles) {
       const dateStr = file.name.replace(".html", ""); // z.B. 2025-10-20
       const dateObj = new Date(dateStr + "T00:00:00");
-      const downloadUrl = file.download_url;
+      const downloadUrl = `/plans/${file.name}`;
+
 
       // HTML laden, um den Stand auszulesen
       const htmlResponse = await fetch(downloadUrl);
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (futureFiles.length === 0) {
-    listDiv.innerHTML = `
+      listDiv.innerHTML = `
     <div class="card">
       <h2>Keine Pläne da!</h2>
       <p>Es wurden keine aktuellen oder zukünftigen Pläne gefunden. Wenn Du glaubst, dass das ein Fehler ist, melde das bitte <a href="/kontakt.html">hier<a/>.</p>
