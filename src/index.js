@@ -60,6 +60,29 @@ export default {
       return new Response(renderLogin(), { headers: { "Content-Type": "text/html" } });
     }
 
+    // JSON-Liste aller Pläne
+    if (url.pathname === "/plans") {
+      const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/plans`;
+      const resp = await fetch(apiUrl, {
+        headers: {
+          "Authorization": `token ${env.GITHUB_TOKEN}`,
+          "Accept": "application/vnd.github.v3+json"
+        }
+      });
+
+      if (!resp.ok) {
+        return new Response(JSON.stringify({ error: "Fehler beim Laden der Pläne" }), {
+          status: resp.status,
+          headers: { "Content-Type": "application/json" }
+        });
+      }
+
+      const json = await resp.json();
+      return new Response(JSON.stringify(json), {
+        headers: { "Content-Type": "application/json" }
+      });
+    }
+
     // Proxy für Pläne
     if (url.pathname.startsWith("/plans/")) {
       const relPath = url.pathname.replace(/^\/plans\//, "");
