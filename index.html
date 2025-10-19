@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>DSB-Bot</title>
+  <link rel="icon" href="assets/images/dsb_bot_logo.jpg" type="image/png">
+  <link rel="stylesheet" href="assets/css/styles.css">
+
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+</head>
+
+<body>
+
+  <div class="background"></div>
+
+  <div class="navbar" id="navbar"></div>
+
+  <div class="container">
+
+
+    <h1>Vertretungspläne</h1>
+
+    <!-- Plan List Container -->
+    <div id="currentPlans-container"></div>
+
+    <!-- Iframe Popup -->
+    <div id="iframe-popup" title="Plan anzeigen"
+      style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+      <div
+        style="position:relative; width:90%; height:90%; background:white; box-shadow:0 0 10px black; border-radius:8px; overflow:hidden;">
+        <button id="close-popup"
+          style="position:absolute; top:10px; right:10px; z-index:10; padding:5px 10px; font-size:16px;">✖</button>
+        <iframe id="plan-frame" src="" style="width:100%; height:100%; border:none;"></iframe>
+      </div>
+    </div>
+
+    <h2>Über DSB-Bot</h2>
+    <div class="list">
+
+      <div class="text-card">
+        <h2>Information</h2>
+        <p>Diese Seite ist noch im Bau und Fehler können auftreten.</p>
+        <p>Bitte überprüfe immer DSB-Mobile, wenn der Stand der Pläne etwas älter ist. Vielleicht hat etwas nicht so
+          geklappt, wie es soll. Melde einen Fehler: <a href="kontakt.html">Kontakt</a></p>
+      </div>
+
+      <div class="text-card">
+        <h2>Funktionen</h2>
+        <p>
+        <ul>
+          <li>Höhere Vertretungsplan-Verfügbarkeit als in der DSB-App!</li>
+          <li>Verschiedene Themes</li>
+          <li>Plan Historie (ab 11.09.2025)</li>
+        </ul>
+        </p>
+      </div>
+
+      <div class="text-card">
+        <h2>Ankündigungen</h2>
+        <p>Upcomming Features...</p>
+        <ul>
+          <li>Ich habe keine Ideen mehr!!!! Bitte hilf mir...</li>
+          <li>Sende <a href="kontakt.html">hier</a> eigene Vorschläge</li>
+        </ul>
+        <br>
+        <p>Inaktivität</p>
+        <ul>
+          <li>Bis zum 19.10.2025 haben wir Herbstpause. Bis dahin können keine neuen Funktionen implementiert werden.</li>
+        </ul>
+      </div>
+
+      <div class="text-card">
+        <h2>Changelog</h2>
+        <p>Update 06.10.2025</p>
+        <ul>
+          <li>Die Pläne laden jetzt dynamisch per js in die Website, was die Fehleranfälligkeit senkt.</li>
+          <li>Neue Themes: Braun, Grün, Lila, Rot, Cyan, Golden & Silver</li>
+          <li>Das Einklappen der Menus funktioniert jetzt auch.</li>
+        </ul>
+        <br>
+        <p>Update 05.10.2025</p>
+        <ul>
+          <li>Die Historie ist jetzt verfügbar! Klicke oben auf "Navigation" -> "Historie", um ältere Pläne anzusehen.
+          </li>
+        </ul>
+        <br>
+        <p>Update 02.10.2025</p>
+        <ul>
+          <li>Alle Themes sind jetzt in der Kopfleiste zu finden.</li>
+        </ul>
+        <br>
+        <p>Update 15.09.2025</p>
+        <ul>
+          <li>Ab jetzt ist das Design auf mehr Geräten nutzbar.</li>
+          <li>Die Pläne werden jetzt in einem Popup-Fenster angezeigt, was die Bedienung auf Mobilgeräten deutlich
+            verbessert.</li>
+        </ul>
+      </div>
+
+      <div class="card" id="quote-card">
+        <h2>Zitat des Tages</h2>
+        <blockquote id="quote-text" style="font-style:italic; margin:0.5rem 0;"></blockquote>
+        <p id="quote-author" style="text-align:right; font-weight:600;"></p>
+      </div>
+
+      <script src="https://www.zitate-online.de/zitatdestages.js"></script>
+
+      <script>
+        (function () {
+          const zitatDiv = document.getElementById("zitatdestages");
+          if (zitatDiv) {
+            // Roh-HTML in Text umwandeln (alle Tags weg)
+            const temp = document.createElement("div");
+            temp.innerHTML = zitatDiv.innerHTML;
+            const rawText = temp.textContent.trim();
+
+            // Erwartetes Format: "Autor: „Zitat“"
+            const parts = rawText.split(":");
+            let author = "";
+            let quote = "";
+
+            if (parts.length > 1) {
+              author = parts[0].trim();
+              quote = parts.slice(1).join(":").trim();
+            } else {
+              quote = rawText;
+            }
+
+            // HTML-Entities ersetzen
+            quote = quote
+              .replace(/&bdquo;/g, "„")
+              .replace(/&ldquo;/g, "“")
+              .replace(/&quot;/g, '"')
+              .replace(/&amp;/g, "&");
+
+            // In Card einsetzen
+            document.getElementById("quote-text").textContent = quote;
+            document.getElementById("quote-author").textContent = author;
+
+            // Originalblock entfernen
+            zitatDiv.remove();
+          } else {
+            document.getElementById("quote-text").textContent = "Zitat konnte nicht geladen werden.";
+          }
+        })();
+      </script>
+    </div>
+
+  </div>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/theme.js"></script>
+  <script src="assets/js/loadCurrentPlans.js"></script>
+  <script src="assets/js/showPlan.js"></script>
+
+  <footer id="footer"></footer>
+
+</body>
+
+</html>

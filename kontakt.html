@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>DSB-Bot</title>
+  <link rel="icon" href="assets/images/dsb_bot_logo.jpg" type="image/png">
+  <link rel="stylesheet" href="assets/css/styles.css">
+
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="background"></div>
+
+  <div class="navbar" id="navbar"></div>
+
+  <div class="container">
+    <h1>Kontakt</h1>
+
+    <div class="list">
+      <div class="text-card">
+        <h2>Vorschläge? Her damit!</h2>
+        <p>Ich freue mich immer über Feedback und Vorschläge zur Verbesserung von DSB-Bot! Du kannst mir gerne eine
+          E-Mail senden oder auf discord hinzufügen.</p>
+        <ul>
+          <li>E-Mail: <a href="mailto:contact.dsbbot@gmail.com">contact.dsbbot@gmail.com</a></li>
+          <li>Discord: derjokko</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/script.js"></script>
+  <script src="assets/js/theme.js"></script>
+
+  <footer id="footer"></footer>
+
+</body>
+
+</html>
