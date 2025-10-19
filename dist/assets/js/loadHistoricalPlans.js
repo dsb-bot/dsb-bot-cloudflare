@@ -3,19 +3,18 @@ async function loadHistoricalPlans() {
   container.innerHTML = `
     <div class="card">
       <h2>Pläne Laden...</h2>
-      <p>Eigentlich sollte das nicht so lange dauern, dass du das hier lesen kannst!</p>
+      <p>Bitte kurz Geduld!</p>
     </div>
   `;
 
   try {
-    // 👉 Ruft jetzt deinen Cloudflare-Worker-Endpunkt auf, nicht GitHub direkt
-    const response = await fetch("/plans");
+    const response = await fetch("/plans"); // Worker-Route
     if (!response.ok) throw new Error("Fehler beim Abrufen der Pläne");
     const files = await response.json();
 
-    // Nur HTML-Dateien im Format YYYY-MM-DD.html
-    const planFiles = files.filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}\.html$/));
-    planFiles.sort((a, b) => new Date(b.name.replace(".html", "")) - new Date(a.name.replace(".html", "")));
+    const planFiles = files
+      .filter(f => f.name.match(/^\d{4}-\d{2}-\d{2}\.html$/))
+      .sort((a, b) => new Date(b.name.replace(".html", "")) - new Date(a.name.replace(".html", "")));
 
     const groupedByWeek = {};
     for (const file of planFiles) {
@@ -27,8 +26,7 @@ async function loadHistoricalPlans() {
     }
 
     container.innerHTML = "";
-
-    let cardIndex = 0; // Für gestaffelte Animation
+    let cardIndex = 0;
 
     Object.keys(groupedByWeek)
       .sort((a, b) => b - a)
@@ -47,8 +45,7 @@ async function loadHistoricalPlans() {
           const options = { weekday: "long", day: "2-digit", month: "2-digit", year: "numeric" };
           const formattedDate = date.toLocaleDateString("de-DE", options);
           const [weekday, rest] = formattedDate.split(", ");
-          // 👉 Lädt jetzt über deinen Worker statt GitHub
-          const downloadUrl = `/plans/${file.name}`;
+          const downloadUrl = `/plans/${file.name}`; // Worker liefert HTML
 
           const card = document.createElement("div");
           card.className = "card hidden";
@@ -61,8 +58,6 @@ async function loadHistoricalPlans() {
           `;
 
           list.appendChild(card);
-
-          // gestaffeltes Einblenden
           setTimeout(() => {
             card.classList.remove("hidden");
             card.classList.add("fade-in");
@@ -79,17 +74,13 @@ async function loadHistoricalPlans() {
       <div class="card">
         <h2>Ein Fehler ist aufgetreten.</h2>
         <p>${error}</p>
-        <p>Bitte melde den Fehler <a href="/kontakt.html">hier<a/>.</p>
       </div>
     `;
   }
 }
 
 // Hilfsfunktionen
-function capitalizeFirstLetter(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
+function capitalizeFirstLetter(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 function getWeekNumber(d) {
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
   const dayNum = d.getUTCDay() || 7;
@@ -100,9 +91,7 @@ function getWeekNumber(d) {
 
 function loadPlan(element) {
   const url = element.dataset.url;
-  console.log("Lade Plan:", url);
-  // Hier kannst du später z. B. ein Modal oder iframe öffnen:
-  // showPlan(url);
+  window.open(url, "_blank"); // oder eigenes Modal, je nach Bedarf
 }
 
 document.addEventListener("DOMContentLoaded", loadHistoricalPlans);
