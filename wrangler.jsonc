@@ -1,0 +1,8 @@
+{
+  "name": "vertretungsplan-site",
+  "compatibility_date": "2025-10-19",
+  "main": "src/index.js",
+  "assets": {
+    "directory": "./dist"
+  }
+}
