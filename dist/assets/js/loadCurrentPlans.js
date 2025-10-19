@@ -15,9 +15,22 @@ document.addEventListener("DOMContentLoaded", async () => {
   `;
 
   try {
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error("Fehler beim Abrufen der Pläne");
+    const response = await fetch("/plans");
+
+    // Prüfen, ob JSON zurückkommt
+    const contentType = response.headers.get("Content-Type") || "";
+    if (!contentType.includes("application/json")) {
+      container.innerHTML = `
+    <div class="card">
+      <h2>Login erforderlich</h2>
+      <p>Bitte melde dich zuerst an.</p>
+    </div>
+  `;
+      return;
+    }
+
     const files = await response.json();
+
 
     // Nur gültige HTML-Dateien mit Datum >= heute
     const futureFiles = files.filter(file => {

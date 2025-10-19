@@ -8,8 +8,18 @@ async function loadHistoricalPlans() {
   `;
 
   try {
-    const response = await fetch("/plans"); // Worker-Route
-    if (!response.ok) throw new Error("Fehler beim Abrufen der Pläne");
+    const response = await fetch("/plans");
+    const contentType = response.headers.get("Content-Type") || "";
+    if (!contentType.includes("application/json")) {
+      container.innerHTML = `
+    <div class="card">
+      <h2>Login erforderlich</h2>
+      <p>Bitte melde dich zuerst an.</p>
+    </div>
+  `;
+      return;
+    }
+
     const files = await response.json();
 
     const planFiles = files
