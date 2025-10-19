@@ -1,8 +1,6 @@
 {
-  "name": "vertretungsplan-site",
+  "name": "dsb-bot",
+  "type": "javascript",
   "compatibility_date": "2025-10-19",
-  "main": "src/index.js",
-  "assets": {
-    "directory": "./dist"
-  }
+  "account_id": "d6aef6a69a8eb4d0350c8145e17e10cc"
 }
